@@ -1,6 +1,6 @@
-# FileSorter — Organizador de Archivos por Extensión
+# FileSorter
 
-Aplicación CLI en C# (.NET) que **organiza archivos automáticamente** en carpetas según su extensión.
+Aplicación CLI en C# (.NET) que **organiza archivos automáticamente** en carpetas según su extensión. Con soporte para CLI, dry-run, deshacer, logging y tests.
 
 ## 🚀 ¿Qué hace?
 
