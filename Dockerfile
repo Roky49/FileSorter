@@ -1,12 +1,12 @@
-# Dockerfile para OrdenarClasificar — .NET 8 Console App
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Dockerfile para FileSorter — .NET 9 Console App
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY OrdenarClasificar.csproj .
+COPY FileSorter.csproj .
 RUN dotnet restore
 COPY . .
 RUN dotnet publish -c Release -o /app
 
-FROM mcr.microsoft.com/dotnet/runtime:8.0
+FROM mcr.microsoft.com/dotnet/runtime:9.0
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["dotnet", "OrdenarClasificar.dll"]
+ENTRYPOINT ["dotnet", "FileSorter.dll"]

@@ -1,52 +1,81 @@
-﻿using System;
-using System.IO;
+﻿using System.CommandLine;
+using Serilog;
+
+namespace FileSorter;
 
 class Program
 {
-    static void Main()
+    static async Task<int> Main(string[] args)
     {
-        Console.WriteLine("Ingrese la ruta del directorio a organizar:");
-        string directoryPath = Console.ReadLine();
+        // ── Configurar Serilog ──
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .WriteTo.File("logs/filesorter-.log", rollingInterval: RollingInterval.Day,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .MinimumLevel.Information()
+            .CreateLogger();
 
-        if (!Directory.Exists(directoryPath))
+        try
         {
-            Console.WriteLine("El directorio no existe.");
-            return;
-        }
+            var pathOption = new Option<DirectoryInfo?>(
+                aliases: ["--path", "-p"],
+                description: "Ruta del directorio a organizar")
+            { IsRequired = false };
 
-        OrganizarArchivos(directoryPath);
-        Console.WriteLine("Organización completada.");
+            var dryRunOption = new Option<bool>(
+                aliases: ["--dry-run", "-d"],
+                description: "Simular sin mover archivos");
+
+            var undoOption = new Option<bool>(
+                aliases: ["--undo", "-u"],
+                description: "Deshacer la última organización");
+
+            var rootCommand = new RootCommand("Organizador de archivos por extensión");
+            rootCommand.AddOption(pathOption);
+            rootCommand.AddOption(dryRunOption);
+            rootCommand.AddOption(undoOption);
+
+            rootCommand.SetHandler((DirectoryInfo? path, bool dryRun, bool undo) =>
+            {
+                if (undo)
+                {
+                    UndoLastOperation();
+                    return;
+                }
+
+                string targetPath = path?.FullName ?? AskForPath();
+                var sorter = new FileSorterEngine(targetPath, dryRun);
+                sorter.Run();
+            }, pathOption, dryRunOption, undoOption);
+
+            return await rootCommand.InvokeAsync(args);
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Error inesperado");
+            return 1;
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
     }
 
-    static void OrganizarArchivos(string directoryPath)
+    static string AskForPath()
     {
-        string[] files = Directory.GetFiles(directoryPath);
-
-        foreach (string file in files)
+        Console.Write("Ingrese la ruta del directorio a organizar: ");
+        string? input = Console.ReadLine();
+        while (string.IsNullOrWhiteSpace(input) || !Directory.Exists(input))
         {
-            string extension = Path.GetExtension(file).TrimStart('.');
-            if (string.IsNullOrEmpty(extension))
-            {
-                extension = "SinExtensión";
-            }
-
-            string newFolder = Path.Combine(directoryPath, extension);
-            if (!Directory.Exists(newFolder))
-            {
-                Directory.CreateDirectory(newFolder);
-            }
-
-            string fileName = Path.GetFileName(file);
-            string newFilePath = Path.Combine(newFolder, fileName);
-
-            try
-            {
-                File.Move(file, newFilePath);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al mover {fileName}: {ex.Message}");
-            }
+            Console.Write("Ruta no válida. Intente de nuevo: ");
+            input = Console.ReadLine();
         }
+        return input;
+    }
+
+    static void UndoLastOperation()
+    {
+        var engine = new FileSorterEngine("");
+        engine.Undo();
     }
 }
