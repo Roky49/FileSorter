@@ -28,14 +28,25 @@ Dado un directorio, mueve cada archivo a una subcarpeta con el nombre de su exte
 
 ## ⚙️ Uso
 
+### Modo interactivo
 ```bash
 dotnet run
 ```
-
 Te pedirá la ruta del directorio a organizar.
 
-O con Docker:
+### CLI con argumentos
+```bash
+# Ruta directa
+dotnet run -- --path "C:/Users/Ro/Descargas"
 
+# Modo simulación (solo muestra lo que haría)
+dotnet run -- --path "C:/Users/Ro/Descargas" --dry-run
+
+# Deshacer última operación
+dotnet run -- --undo
+```
+
+### Con Docker
 ```bash
 docker build -t filesorter .
 docker run -it -v /ruta/a/organizar:/data filesorter
@@ -43,18 +54,28 @@ docker run -it -v /ruta/a/organizar:/data filesorter
 
 ## 🛠️ Tecnologías
 
-- **Lenguaje:** C# 10+
-- **Framework:** .NET 6+
-- **Docker:** Multi-stage build (imagen ~150MB)
+- **Lenguaje:** C# 12
+- **Framework:** .NET 9
+- **Logging:** Serilog (consola + archivo rotativo)
+- **Testing:** xUnit (6 tests)
+- **Docker:** Multi-stage build
 
-## ✅ Estado
+## ✅ Funcionalidades implementadas
 
-Completado y funcional. Organiza archivos por extensión con manejo de errores y soporte Docker.
+| Feature | Descripción |
+|---|---|
+| ✅ **Organización por extensión** | Agrupa archivos en carpetas según su tipo |
+| ✅ **CLI con argumentos** | `--path`, `--dry-run`, `--undo` |
+| ✅ **Modo simulación** | Muestra qué movería sin ejecutar nada |
+| ✅ **Deshacer** | Restaura archivos a su ubicación original |
+| ✅ **Logging** | Logs en consola + archivo con Serilog |
+| ✅ **Manejo de colisiones** | Renombra automáticamente archivos duplicados |
+| ✅ **Tests unitarios** | 6 tests con xUnit |
+| ✅ **Docker** | Imagen lista para ejecutar |
 
-## 🚧 Mejoras futuras
+## 📊 Tests
 
-- [ ] CLI con argumentos (`--path`, `--dry-run`)
-- [ ] Modo simulación (mostrar qué movería sin mover nada)
-- [ ] Tests unitarios
-- [ ] Logging con Serilog
-- [ ] Deshacer operación
+```
+Pruebas totales: 6
+     Correcto: 6
+```
