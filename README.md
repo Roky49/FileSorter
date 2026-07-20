@@ -1,36 +1,60 @@
-# OrdenarClasificar
+# FileSorter — Organizador de Archivos por Extensión
 
-Algoritmos de ordenamiento y clasificacion implementados en C# (.NET).
+Aplicación CLI en C# (.NET) que **organiza archivos automáticamente** en carpetas según su extensión.
 
-## Tecnologias
+## 🚀 ¿Qué hace?
 
-- Lenguaje: C#
-- Framework: .NET Framework / .NET Core
-- Tipo: Aplicacion de consola
+Dado un directorio, mueve cada archivo a una subcarpeta con el nombre de su extensión:
 
-## Contenido
+```
+📂 CarpetaDesordenada
+   ├── foto.jpg
+   ├── doc.pdf
+   ├── cancion.mp3
+   └── video.mp4
 
-Implementaciones de algoritmos clasicos de ordenamiento y clasificacion de datos,
-disenado como herramienta educativa para entender los diferentes metodos.
+     ↓ Ejecutas FileSorter ↓
 
-## Requisitos
+📂 CarpetaDesordenada
+   ├── 📁 jpg/
+   │   └── foto.jpg
+   ├── 📁 pdf/
+   │   └── doc.pdf
+   ├── 📁 mp3/
+   │   └── cancion.mp3
+   └── 📁 mp4/
+       └── video.mp4
+```
 
-- Visual Studio 2022+ o .NET SDK
-- Compatible con .NET 6+
+## ⚙️ Uso
 
-## Uso
+```bash
+dotnet run
+```
 
-Abrir el archivo .sln en Visual Studio y compilar la solucion.
+Te pedirá la ruta del directorio a organizar.
 
-## 🚀 Mejoras propuestas
+O con Docker:
 
-- [ ] **Más algoritmos** — Implementar QuickSort, MergeSort, HeapSort, BFS/DFS
-- [ ] **Interfaz gráfica** — Añadir WinForms o WPF para experiencia visual
-- [ ] **CLI con argumentos** — Aceptar ruta por parámetro en vez de pedirla interactivamente
-- [ ] **Tests unitarios** — xUnit para probar cada algoritmo
-- [ ] **Benchmarks** — Medir tiempo de ejecución con BenchmarkDotNet
-- [ ] **Modo simulación** — Mostrar paso a paso del ordenamiento (educativo)
-- [ ] **Soporte para archivos grandes** — Procesamiento asíncrono con `async/await`
-- [ ] **Logging** — Registrar operaciones realizadas con Serilog
-- [ ] **README en inglés** — Versión bilingüe
-- [ ] **Publicar como NuGet package** — Para reutilizar en otros proyectos
+```bash
+docker build -t filesorter .
+docker run -it -v /ruta/a/organizar:/data filesorter
+```
+
+## 🛠️ Tecnologías
+
+- **Lenguaje:** C# 10+
+- **Framework:** .NET 6+
+- **Docker:** Multi-stage build (imagen ~150MB)
+
+## ✅ Estado
+
+Completado y funcional. Organiza archivos por extensión con manejo de errores y soporte Docker.
+
+## 🚧 Mejoras futuras
+
+- [ ] CLI con argumentos (`--path`, `--dry-run`)
+- [ ] Modo simulación (mostrar qué movería sin mover nada)
+- [ ] Tests unitarios
+- [ ] Logging con Serilog
+- [ ] Deshacer operación
