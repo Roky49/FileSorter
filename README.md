@@ -37,10 +37,10 @@ Te pedirá la ruta del directorio a organizar.
 ### CLI con argumentos
 ```bash
 # Ruta directa
-dotnet run -- --path "C:/Users/Ro/Descargas"
+dotnet run -- --path ""
 
 # Modo simulación (solo muestra lo que haría)
-dotnet run -- --path "C:/Users/Ro/Descargas" --dry-run
+dotnet run -- --path "" --dry-run
 
 # Deshacer última operación
 dotnet run -- --undo
