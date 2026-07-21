@@ -60,7 +60,18 @@ docker run -it -v /ruta/a/organizar:/data filesorter
 - **Testing:** xUnit (6 tests)
 - **Docker:** Multi-stage build
 
-## ✅ Funcionalidades implementadas
+## 📊 Progreso
+
+**✅ 8/8 funcionalidades implementadas** | **100% completo** ██████████
+
+## 🚀 Próximas mejoras (fase 2)
+
+- [ ] **Interfaz gráfica** — App WPF o web con Blazor para gestión visual
+- [ ] **Reglas por carpeta** — Configuración YAML/JSON para organización personalizada
+- [ ] **Watch mode** — Monitorear carpeta y organizar automáticamente
+- [ ] **Organización por fecha** — Año/Mes además de extensión
+- [ ] **Compresión de imágenes** — Optimizar JPEG/PNG al mover
+- [ ] **Estadísticas de uso** — Reporte de tipos de archivo organizados
 
 | Feature | Descripción |
 |---|---|
