@@ -1,0 +1,20 @@
+# Configuración para FileSorter
+# Guarda este archivo como rules.yaml y úsalo con --config rules.yaml
+---
+- folder: imagenes
+  extensions: jpg, jpeg, png, gif, webp, svg, bmp
+
+- folder: documentos
+  extensions: pdf, doc, docx, xls, xlsx, ppt, pptx, txt, csv, md
+
+- folder: videos
+  extensions: mp4, avi, mkv, mov, wmv, flv
+
+- folder: musica
+  extensions: mp3, wav, flac, aac, ogg, wma
+
+- folder: archivos
+  extensions: zip, rar, 7z, tar, gz
+
+- folder: codigo
+  extensions: cs, py, js, ts, html, css, sql, json, xml, yaml
