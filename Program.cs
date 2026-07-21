@@ -19,9 +19,11 @@ class Program
             var pathOption = new Option<DirectoryInfo?>(["--path", "-p"], "Ruta del directorio a organizar");
             var dryRunOption = new Option<bool>(["--dry-run", "-d"], "Simular sin mover archivos");
             var undoOption = new Option<bool>(["--undo", "-u"], "Deshacer la última organización");
-            var configOption = new Option<FileInfo?>(["--config", "-c"], "Ruta del archivo de configuración YAML/JSON con reglas personalizadas");
+            var configOption = new Option<FileInfo?>(["--config", "-c"], "Ruta del archivo de configuración YAML/JSON");
             var byDateOption = new Option<bool>(["--by-date"], "Organizar también por año/mes");
-            var reportOption = new Option<bool>(["--report", "-r"], "Generar reporte de tipos de archivo sin organizar");
+            var reportOption = new Option<bool>(["--report", "-r"], "Generar reporte sin organizar");
+            var watchOption = new Option<bool>(["--watch", "-w"], "👁️  Modo watch: monitorear carpeta y organizar automáticamente");
+            var compressOption = new Option<bool>(["--compress"], "🖼️  Comprimir imágenes JPEG/PNG al organizar");
 
             var rootCommand = new RootCommand("Organizador de archivos por extensión");
             rootCommand.AddOption(pathOption);
@@ -30,39 +32,30 @@ class Program
             rootCommand.AddOption(configOption);
             rootCommand.AddOption(byDateOption);
             rootCommand.AddOption(reportOption);
+            rootCommand.AddOption(watchOption);
+            rootCommand.AddOption(compressOption);
 
-            rootCommand.SetHandler((DirectoryInfo? path, bool dryRun, bool undo, FileInfo? config, bool byDate, bool report) =>
+            rootCommand.SetHandler((DirectoryInfo? path, bool dryRun, bool undo, FileInfo? config, bool byDate, bool report, bool watch, bool compress) =>
             {
                 if (undo) { UndoLastOperation(); return; }
-
                 string targetPath = path?.FullName ?? AskForPath();
 
                 var sorter = new FileSorterEngine(targetPath, dryRun)
                 {
                     ConfigPath = config?.FullName,
-                    OrganizeByDate = byDate
+                    OrganizeByDate = byDate,
+                    CompressImages = compress
                 };
 
-                if (report)
-                {
-                    sorter.GenerateReport();
-                    return;
-                }
-
+                if (report) { sorter.GenerateReport(); return; }
+                if (watch) { sorter.StartWatching(); return; }
                 sorter.Run();
-            }, pathOption, dryRunOption, undoOption, configOption, byDateOption, reportOption);
+            }, pathOption, dryRunOption, undoOption, configOption, byDateOption, reportOption, watchOption, compressOption);
 
             return await rootCommand.InvokeAsync(args);
         }
-        catch (Exception ex)
-        {
-            Log.Fatal(ex, "Error inesperado");
-            return 1;
-        }
-        finally
-        {
-            Log.CloseAndFlush();
-        }
+        catch (Exception ex) { Log.Fatal(ex, "Error inesperado"); return 1; }
+        finally { Log.CloseAndFlush(); }
     }
 
     static string AskForPath()
